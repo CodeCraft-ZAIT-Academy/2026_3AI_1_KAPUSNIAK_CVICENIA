@@ -1,4 +1,10 @@
 <section>
+
+  <app-cart
+[books]="borrowedBooks()"
+(returned) ="giveBack($event)">
+</app-cart>
+
   <h2>Zoznam kníh</h2>
   <p>V knižnici je spolu {{ books.length }} kníh.</p>
 

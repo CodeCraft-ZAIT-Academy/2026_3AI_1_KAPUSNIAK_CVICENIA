@@ -4,10 +4,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { BookCard } from '../book-card/book-card';
 import { Book } from '../book';
 import { generateBooks } from '../book-generator';
+import { Cart } from '../cart/cart';
 
 @Component({
   selector: 'app-book-list',
-  imports: [BookCard, MatButtonModule, MatIconModule],
+  imports: [BookCard, Cart, MatButtonModule, MatIconModule],
   templateUrl: './book-list.html',
   styleUrl: './book-list.css'
 })
@@ -75,4 +76,19 @@ export class BookList {
       this.currentPage++;
     }
   }
+
+  borrowedBooks(): Book[] {
+    return this.books.filter(book => !book.available);
+    }
+
+    giveBack(book: Book): void {
+
+      const index = this.books.indexOf(book);
+      
+      this.books[index] = {
+      ...book,
+      available: true
+      };
+      
+      }
 }
