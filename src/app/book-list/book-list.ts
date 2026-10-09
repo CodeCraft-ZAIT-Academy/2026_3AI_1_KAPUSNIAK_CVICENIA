@@ -91,4 +91,16 @@ export class BookList {
       };
       
       }
+
+
+
+      borrow(book: Book): void {
+        const index = this.books.indexOf(book);
+        if (index !== -1) {
+          this.books[index] = {
+            ...book,
+            available: false
+          };
+        }
+      }
 }

@@ -10,7 +10,9 @@
 
   @for (book of books; track book.id; let i = $index) {
     @if (isOnCurrentPage(i)) {
-      <app-book-card [book]="book"></app-book-card>
+      <app-book-card [book]="book"
+      (borrowed)="borrow(book)"
+      (returned)="giveBack(book)"></app-book-card>
     }
   } @empty {
     <p>V knižnici zatiaľ nie sú žiadne knihy.</p>
