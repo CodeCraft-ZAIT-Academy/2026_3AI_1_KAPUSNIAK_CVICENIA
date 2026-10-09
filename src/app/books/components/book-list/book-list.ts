@@ -2,9 +2,9 @@ import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { BookCard } from '../book-card/book-card';
-import { Book } from '../book';
-import { generateBooks } from '../book-generator';
-import { Cart } from '../cart/cart';
+import { Book } from '../../book';
+import { generateBooks } from '../../book-generator';
+import { Cart } from '../../../cart/components/cart/cart';
 
 @Component({
   selector: 'app-book-list',
