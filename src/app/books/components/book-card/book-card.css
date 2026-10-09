@@ -22,3 +22,13 @@
   color: #f59e0b;
   font-variation-settings: 'FILL' 1;
 }
+
+.delete-button {
+  --mat-button-filled-container-color: #dc2626;
+  --mat-button-filled-label-text-color: #ffffff;
+}
+
+.delete-confirmation {
+  padding: 16px 0;
+  color: #991b1b;
+}

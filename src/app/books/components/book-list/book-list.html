@@ -1,21 +1,93 @@
 <section>
 
-  <app-cart
-[books]="borrowedBooks()"
-(returned) ="giveBack($event)">
-</app-cart>
+  <mat-accordion multi>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <mat-icon>shopping_cart</mat-icon>
+          Košík
+        </mat-panel-title>
+        <mat-panel-description>
+          Požičané knihy: {{ borrowedBooks().length }} / {{ maxBorrowed }}
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+
+      <app-cart [books]="borrowedBooks()" (returned)="giveBack($event)"></app-cart>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel #addPanel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <mat-icon>add</mat-icon>
+          Pridať knihu
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <app-book-form (saved)="addBook($event); addPanel.close()"></app-book-form>
+    </mat-expansion-panel>
+  </mat-accordion>
 
   <h2>Zoznam kníh</h2>
-  <p>V knižnici je spolu {{ books.length }} kníh.</p>
 
-  @for (book of books; track book.id; let i = $index) {
+  <div class="controls-bar">
+    
+
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Hľadať podľa názvu alebo autora</mat-label>
+      <mat-icon matPrefix>search</mat-icon>
+      <input 
+        matInput 
+        type="text" 
+        [(ngModel)]="searchText" 
+        (ngModelChange)="onFilterChange()" 
+        placeholder="Napr. Hobit alebo Tolkien">
+      
+      @if (searchText) {
+        <button matIconButton matSuffix (click)="clearSearch()" aria-label="Vyčistiť">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+    </mat-form-field>
+
+    <mat-button-toggle-group 
+      [(ngModel)]="availabilityFilter" 
+      (ngModelChange)="onFilterChange()" 
+      aria-label="Filter dostupnosti">
+      <mat-button-toggle value="all">Všetky</mat-button-toggle>
+      <mat-button-toggle value="available">Dostupné</mat-button-toggle>
+      <mat-button-toggle value="borrowed">Vypožičané</mat-button-toggle>
+    </mat-button-toggle-group>
+
+    <mat-form-field appearance="outline" class="sort-field">
+      <mat-label>Zoradiť podľa</mat-label>
+      <mat-select [(ngModel)]="sortBy" (ngModelChange)="onFilterChange()">
+        <mat-option value="none">Bez zoradenia</mat-option>
+        <mat-option value="title">Názvu (A – Z)</mat-option>
+        <mat-option value="year">Roku (najnovšie)</mat-option>
+        <mat-option value="rating">Hodnotenia (najlepšie)</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+  </div>
+
+  <p>Zobrazené knihy: {{ visibleBooks().length }} z {{ books.length }}</p>
+
+  @for (book of visibleBooks(); track book.id; let i = $index) {
     @if (isOnCurrentPage(i)) {
-      <app-book-card [book]="book"
-      (borrowed)="borrow(book)"
-      (returned)="giveBack(book)"></app-book-card>
+      <app-book-card 
+        [book]="book"
+        (borrowed)="borrow(book)"
+        (returned)="giveBack(book)"
+        (edited)="updateBook($event)"
+        (deleted)="deleteBook($event)">
+      </app-book-card>
     }
   } @empty {
-    <p>V knižnici zatiaľ nie sú žiadne knihy.</p>
+    @if (books.length === 0) {
+      <p>V knižnici zatiaľ nie sú žiadne knihy.</p>
+    } @else {
+      <p>Nenašli sa žiadne knihy. Skús zmeniť hľadanie alebo filter.</p>
+    }
   }
 
   <div class="pagination">
@@ -31,4 +103,5 @@
       <mat-icon iconPositionEnd>chevron_right</mat-icon>
     </button>
   </div>
+
 </section>

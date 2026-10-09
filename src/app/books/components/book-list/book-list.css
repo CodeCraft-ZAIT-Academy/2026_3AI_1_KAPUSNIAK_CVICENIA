@@ -5,3 +5,45 @@
     gap: 16px;
     margin-top: 8px;
   }
+
+  mat-panel-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .search-field {
+    width: 100%;
+    margin-top: 16px;
+    margin-bottom: 8px;
+  }
+
+  .controls-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+    margin-top: 16px;
+    margin-bottom: 8px;
+  }
+  
+  .search-field {
+    flex: 1 1 300px;
+  }
+  
+  .sort-field {
+    flex: 0 1 220px;
+  }
+  
+  mat-button-toggle-group {
+    margin-bottom: 22px;
+  }
+  
+  @media (max-width: 600px) {
+    .search-field,
+    .sort-field,
+    mat-button-toggle-group {
+      width: 100%;
+      flex: 1 1 100%;
+    }
+  }
