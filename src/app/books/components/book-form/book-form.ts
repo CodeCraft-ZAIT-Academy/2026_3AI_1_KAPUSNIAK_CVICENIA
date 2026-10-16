@@ -5,6 +5,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { Book } from '../../book'; 
+import { createEmptyBook } from '../../book.factory';
 import { GENRES } from '../../genres'; 
 
 
@@ -31,7 +32,7 @@ export class BookFormComponent implements OnInit {
   saved = output<Book>();
   cancelled = output<void>()
 
-  draft: Book = this.emptyBook();
+  draft: Book = createEmptyBook();
 
   ngOnInit(): void {
     const initialBook = this.book();
@@ -66,9 +67,7 @@ export class BookFormComponent implements OnInit {
   submitForm(form: NgForm): void {
     if (form.invalid) return;
 
-    this.saved.emit({ ...this.draft });
-    if (!this.isEditMode()) {
-      form.resetForm(this.emptyBook());
+    this.draft = createEmptyBook();
+    form.resetForm(this.draft);
     }
   }
-}

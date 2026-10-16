@@ -1,5 +1,4 @@
 <section>
-
   <mat-accordion multi>
     <mat-expansion-panel>
       <mat-expansion-panel-header>
@@ -30,18 +29,17 @@
   <h2>Zoznam kníh</h2>
 
   <div class="controls-bar">
-    
-
     <mat-form-field appearance="outline" class="search-field">
       <mat-label>Hľadať podľa názvu alebo autora</mat-label>
       <mat-icon matPrefix>search</mat-icon>
-      <input 
-        matInput 
-        type="text" 
-        [(ngModel)]="searchText" 
-        (ngModelChange)="onFilterChange()" 
-        placeholder="Napr. Hobit alebo Tolkien">
-      
+      <input
+        matInput
+        type="text"
+        [(ngModel)]="searchText"
+        (ngModelChange)="onFilterChange()"
+        placeholder="Napr. Hobit alebo Tolkien"
+      />
+
       @if (searchText) {
         <button matIconButton matSuffix (click)="clearSearch()" aria-label="Vyčistiť">
           <mat-icon>close</mat-icon>
@@ -49,10 +47,11 @@
       }
     </mat-form-field>
 
-    <mat-button-toggle-group 
-      [(ngModel)]="availabilityFilter" 
-      (ngModelChange)="onFilterChange()" 
-      aria-label="Filter dostupnosti">
+    <mat-button-toggle-group
+      [(ngModel)]="availabilityFilter"
+      (ngModelChange)="onFilterChange()"
+      aria-label="Filter dostupnosti"
+    >
       <mat-button-toggle value="all">Všetky</mat-button-toggle>
       <mat-button-toggle value="available">Dostupné</mat-button-toggle>
       <mat-button-toggle value="borrowed">Vypožičané</mat-button-toggle>
@@ -67,19 +66,19 @@
         <mat-option value="rating">Hodnotenia (najlepšie)</mat-option>
       </mat-select>
     </mat-form-field>
-
   </div>
 
   <p>Zobrazené knihy: {{ visibleBooks().length }} z {{ books.length }}</p>
 
   @for (book of visibleBooks(); track book.id; let i = $index) {
     @if (isOnCurrentPage(i)) {
-      <app-book-card 
+      <app-book-card
         [book]="book"
         (borrowed)="borrow(book)"
         (returned)="giveBack(book)"
         (edited)="updateBook($event)"
-        (deleted)="deleteBook($event)">
+        (deleted)="deleteBook($event)"
+      >
       </app-book-card>
     }
   } @empty {
@@ -103,5 +102,4 @@
       <mat-icon iconPositionEnd>chevron_right</mat-icon>
     </button>
   </div>
-
 </section>

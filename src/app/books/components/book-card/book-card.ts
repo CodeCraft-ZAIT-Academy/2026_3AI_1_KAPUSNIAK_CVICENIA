@@ -5,6 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { Book } from '../../book';
 import { BookDetail } from '../book-detail/book-detail';
 import { BookFormComponent } from '../book-form/book-form';
+import { getGenreColor } from '../../genre-colors';
 
 @Component({
   selector: 'app-book-card',
@@ -43,26 +44,8 @@ export class BookCard {
     this.edited.emit(updatedBook);
     this.editing = false; 
   }
-
   genreColor(): string {
-    switch (this.book().genre) {
-      case 'Fantasy':
-        return '#7c3aed';
-      case 'Science Fiction':
-        return '#0891b2';
-      case 'Mystery':
-        return '#ca8a04';
-      case 'Romance':
-        return '#db2777';
-      case 'Horror':
-        return '#b91c1c';
-      case 'Classic':
-        return '#92400e';
-      case "Children's Literature":
-        return '#16a34a';
-      default:
-        return '#94a3b8';
-    }
+    return getGenreColor(this.book().genre);
   }
 
   toggleDetails(): void {

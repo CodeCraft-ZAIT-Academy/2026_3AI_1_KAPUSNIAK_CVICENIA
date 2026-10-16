@@ -71,39 +71,12 @@ export class BookList {
   pageSize: number = 5;
 
   visibleBooks(): Book[] {
-    let result = this.books;
-
-    const query = this.searchText.trim().toLowerCase();
-    if (query) {
-      result = result.filter(b => 
-        b.title.toLowerCase().includes(query) || 
-        b.author.toLowerCase().includes(query)
-      );
-    }
-    if (this.availabilityFilter === 'available') {
-      result = result.filter(b => b.available);
-    } else if (this.availabilityFilter === 'borrowed') {
-      result = result.filter(b => !b.available);
-    }
-
-    const sorted = [...result];
-    switch (this.sortBy) {
-      case 'title':
-        sorted.sort((a, b) => a.title.localeCompare(b.title));
-        break;
-      case 'year':
-        sorted.sort((a, b) => b.year - a.year); 
-        break;
-      case 'rating':
-        sorted.sort((a, b) => b.rating - a.rating); 
-        break;
-      case 'none':
-      default:
-        break;
-    }
-
-    return sorted;
-  }
+  return this.bookService.getFilteredBooks(
+    this.searchText,
+    this.availabilityFilter,
+    this.sortBy
+  );
+}
   onFilterChange(): void {
     this.currentPage = 1;
   }
