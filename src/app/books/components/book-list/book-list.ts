@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -12,6 +12,8 @@ import { Book } from '../../book';
 import { generateBooks } from '../../book-generator';
 import { Cart } from '../../../cart/components/cart/cart';
 import { BookFormComponent } from '../book-form/book-form';
+import { BookService } from '../../book.service';
+
 
 @Component({
   selector: 'app-book-list',
@@ -32,15 +34,35 @@ import { BookFormComponent } from '../book-form/book-form';
   styleUrl: './book-list.css'
 })
 export class BookList {
+  private bookService = inject(BookService);
   myBooks: Book[] = [
     { id: 1, title: 'Hobit', author: 'J. R. R. Tolkien', year: 1937, available: true, genre: 'Fantasy', rating: 5, pages: 310, favorite: false },
     { id: 2, title: '1984', author: 'George Orwell', year: 1947, available: false, genre: 'Dystopia', rating: 5, pages: 310, favorite: false },
     { id: 3, title: 'Malý Princ', author: 'Exupéry', year: 1943, available: true, genre: 'Fiction', rating: 5, pages: 310, favorite: false }
   ];
 
-  maxBorrowed: number = 10;
-  books: Book[] = this.myBooks.concat(generateBooks(40, 4));
+  maxBorrowed: number = this.bookService.maxBorrowed;
+  books: Book[] = this.bookService.getBooks();
 
+  limitBorrowed(books: Book[]): Book[] {
+    let borrowedCount = 0;
+
+    return books.map(book => {
+      if (book.available) {
+        return book;
+      }
+
+      borrowedCount++;
+
+      if (borrowedCount > this.maxBorrowed) {
+        return { ...book, available: true };
+      }
+
+      return book;
+    });
+  }
+
+  
   searchText: string = '';
   availabilityFilter: string = 'all'; 
   sortBy: string = 'none'; 
@@ -113,44 +135,41 @@ export class BookList {
   }
 
   borrowedBooks(): Book[] {
-    return this.books.filter(book => !book.available);
-  }
-
-  giveBack(book: Book): void {
-    const index = this.books.indexOf(book);
-    this.books[index] = { ...book, available: true };
+    return this.bookService.borrowedBooks();
   }
 
   borrow(book: Book): void {
-    if (this.borrowedBooks().length >= this.maxBorrowed) {
-      alert(`Naraz môžeš mať požičaných najviac ${this.maxBorrowed} kníh. Najskôr musíš nejakú vrátiť.`);
+    if (!this.bookService.borrowBook(book.id)) {
+      alert(`Naraz môžeš mať požičaných najviac ${this.maxBorrowed} kníh. Najskôr nejakú vráť.`);
       return;
     }
-    const index = this.books.indexOf(book);
-    this.books[index] = { ...book, available: false };
+    this.refreshBooks();
   }
 
-  addBook(newBook: Book): void {
+  giveBack(book: Book): void {
+    this.bookService.returnBook(book.id);
+    this.refreshBooks();
+  }
+
+  addBook(book: Book): void {
     const maxId = Math.max(0, ...this.books.map(b => b.id));
-    const bookToAdd: Book = {
-      ...newBook,
-      id: maxId + 1,
-      available: true,
-      favorite: false
-    };
-    this.books.unshift(bookToAdd);
-    this.currentPage = 1;
+    this.books = [{ ...book, id: maxId + 1 }, ...this.books];
   }
 
-  updateBook(updatedBook: Book): void {
-    this.books = this.books.map(b => b.id === updatedBook.id ? { ...updatedBook } : b);
+  updateBook(updated: Book): void {
+    this.books = this.books.map(book => book.id === updated.id ? updated : book);
   }
 
   deleteBook(id: number): void {
-    this.books = this.books.filter(b => b.id !== id);
-    const maxPage = this.pageCount();
-    if (this.currentPage > maxPage && maxPage > 0) {
-      this.currentPage = maxPage;
-    }
+    this.books = this.books.filter(book => book.id !== id);
+  }
+
+  refreshBooks(): void {
+    this.books = this.bookService.getBooks();
+  }
+
+  toggleFavorite(book: Book): void {
+    this.bookService.toggleFavorite(book.id);
+    this.refreshBooks();
   }
 }
