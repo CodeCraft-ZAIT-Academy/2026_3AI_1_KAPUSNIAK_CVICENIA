@@ -4,7 +4,7 @@ import { generateBooks } from './book-generator';
 
 @Injectable({ providedIn: 'root' })
 export class BookService {
-  myBooks: Book[] = [
+  private readonly myBooks: Book[] = [
     {
       id: 1,
       title: 'Hobit',
@@ -84,12 +84,14 @@ export class BookService {
   }
 
   borrowBook(id: number): boolean {
-    if (this.borrowedBooks().length >= this.maxBorrowed) return false;
+    if (!this.canBorrowBook(id)) return false;
+  
     this.books = this.books.map(book =>
       book.id === id ? { ...book, available: false } : book
     );
     return true;
   }
+
 
   returnBook(id: number): void {
     this.books = this.books.map(book =>
@@ -101,5 +103,66 @@ export class BookService {
       book.id === id ? { ...book, favorite: !book.favorite } : book
     );
   }
+
+  getFilteredBooks(
+    searchText: string,
+    availability: string,
+    sortBy: string
+  ): Book[] {
+    const text = searchText.trim().toLowerCase();
+  
+    let result = this.books.filter(book =>
+      book.title.toLowerCase().includes(text) ||
+      book.author.toLowerCase().includes(text)
+    );
+  
+    if (availability === 'available') {
+      result = result.filter(book => book.available);
+    } else if (availability === 'borrowed') {
+      result = result.filter(book => !book.available);
+    }
+  
+    switch (sortBy) {
+      case 'title':
+        result = [...result].sort((a, b) =>
+          a.title.localeCompare(b.title));
+        break;
+      case 'year':
+        result = [...result].sort((a, b) => b.year - a.year);
+        break;
+      case 'rating':
+        result = [...result].sort((a, b) => b.rating - a.rating);
+        break;
+    }
+  
+    return result;
+  }
+
+  
+  getBookById(id: number): Book | undefined {
+    return this.books.find(book => book.id === id);
+  }
+
+  getAvailableBooks(): Book[] {
+    return this.books.filter(book => book.available);
+  }
+  
+  getFavoriteBooks(): Book[] {
+    return this.books.filter(book => book.favorite);
+  }
+
+  
+  getTotalBooksCount(): number {
+    return this.books.length;
+  }
+
+
+  canBorrowBook(id: number): boolean {
+    const book = this.getBookById(id);
+    return !!book && book.available &&
+      this.borrowedBooks().length < this.maxBorrowed;
+  }
+
+
 
   }
