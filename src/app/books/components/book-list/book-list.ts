@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -13,6 +13,7 @@ import { generateBooks } from '../../book-generator';
 import { Cart } from '../../../cart/components/cart/cart';
 import { BookFormComponent } from '../book-form/book-form';
 import { BookService } from '../../book.service';
+
 
 
 @Component({
@@ -41,7 +42,7 @@ export class BookList {
     { id: 3, title: 'Malý Princ', author: 'Exupéry', year: 1943, available: true, genre: 'Fiction', rating: 5, pages: 310, favorite: false }
   ];
 
-  maxBorrowed: number = this.bookService.maxBorrowed;
+  readonly maxBorrowed = this.bookService.maxBorrowed;
   books: Book[] = this.bookService.getBooks();
 
   limitBorrowed(books: Book[]): Book[] {
@@ -63,78 +64,83 @@ export class BookList {
   }
 
   
-  searchText: string = '';
-  availabilityFilter: string = 'all'; 
-  sortBy: string = 'none'; 
+  readonly searchText = signal('');
+  readonly availabilityFilter = signal('all');
+  readonly sortBy = signal('none');
 
-  currentPage: number = 1;
-  pageSize: number = 5;
+  readonly currentPage = signal(1);
+  readonly pageSize = signal(5);
+  readonly pageSizes = [5, 10, 20];
 
-  visibleBooks(): Book[] {
-  return this.bookService.getFilteredBooks(
-    this.searchText,
-    this.availabilityFilter,
-    this.sortBy
-  );
-}
+
+  readonly visibleBooks = computed(() =>
+  this.bookService.getFilteredBooks(
+    this.searchText(),
+    this.availabilityFilter(),
+    this.sortBy()
+  )
+);
   onFilterChange(): void {
-    this.currentPage = 1;
+    this.currentPage.set(1);
   }
 
   clearSearch(): void {
-    this.searchText = '';
-    this.onFilterChange();
+    this.searchText.set('');
+    this.firstPage();
   }
 
-  pageCount(): number {
-    return Math.max(1, Math.ceil(this.visibleBooks().length / this.pageSize));
-  }
+readonly pageCount = computed(() =>
+  Math.max(1, Math.ceil(this.visibleBooks().length / this.pageSize()))
+);
+readonly firstShown = computed(() =>
+  (this.currentPage() - 1) * this.pageSize() + 1
+);
+readonly lastShown = computed(() =>
+  Math.min(this.currentPage() * this.pageSize(), this.visibleBooks().length)
+);
+readonly pages = computed(() =>
+  Array.from({ length: this.pageCount() }, (_, i) => i + 1)
+);
 
-  isOnCurrentPage(index: number): boolean {
-    const start = (this.currentPage - 1) * this.pageSize;
-    return index >= start && index < start + this.pageSize;
-  }
+isOnCurrentPage(index: number): boolean {
+  const start = (this.currentPage() - 1) * this.pageSize();
+  return index >= start && index < start + this.pageSize();
+}
 
-  previousPage(): void {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-    }
-  }
+previousPage(): void {
+  this.currentPage.update(p => Math.max(1, p - 1));
+}
 
   nextPage(): void {
-    if (this.currentPage < this.pageCount()) {
-      this.currentPage++;
-    }
+    this.currentPage.update(p => Math.min(this.pageCount(), p + 1));
   }
 
-  borrowedBooks(): Book[] {
-    return this.bookService.borrowedBooks();
-  }
+  readonly borrowedBooks = this.bookService.borrowedBooks;
 
   borrow(book: Book): void {
     if (!this.bookService.borrowBook(book.id)) {
-      alert(`Naraz môžeš mať požičaných najviac ${this.maxBorrowed} kníh. Najskôr nejakú vráť.`);
-      return;
+      alert('Knihu teraz nie je možné vypožičať.');
     }
-    this.refreshBooks();
   }
-
+  
   giveBack(book: Book): void {
     this.bookService.returnBook(book.id);
-    this.refreshBooks();
   }
 
   addBook(book: Book): void {
-    const maxId = Math.max(0, ...this.books.map(b => b.id));
-    this.books = [{ ...book, id: maxId + 1 }, ...this.books];
+    this.bookService.addBook(book);
+    this.firstPage();
   }
-
+  
   updateBook(updated: Book): void {
-    this.books = this.books.map(book => book.id === updated.id ? updated : book);
+    this.bookService.updateBook(updated);
   }
 
-  deleteBook(id: number): void {
-    this.books = this.books.filter(book => book.id !== id);
+  deleteBook(deleted: Book): void {
+    this.bookService.deleteBook(deleted.id);
+    if (this.currentPage() > this.pageCount()) {
+      this.lastPage();
+    }
   }
 
   refreshBooks(): void {
@@ -143,6 +149,20 @@ export class BookList {
 
   toggleFavorite(book: Book): void {
     this.bookService.toggleFavorite(book.id);
-    this.refreshBooks();
   }
+  
+
+  firstPage(): void { this.currentPage.set(1); }
+lastPage(): void { this.currentPage.set(this.pageCount()); }
+
+
+goToPage(page: number): void {
+  this.currentPage.set(Math.max(1, Math.min(page, this.pageCount())));
+}
+setPageSize(size: number): void {
+  this.pageSize.set(size);
+  this.firstPage();
+}
+
+  
 }

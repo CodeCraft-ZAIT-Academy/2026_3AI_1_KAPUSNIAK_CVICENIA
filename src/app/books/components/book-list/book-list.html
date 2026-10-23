@@ -35,12 +35,12 @@
       <input
         matInput
         type="text"
-        [(ngModel)]="searchText"
-        (ngModelChange)="onFilterChange()"
+        [ngModel]="searchText()"
+        (ngModelChange)="searchText.set($event); firstPage()"
         placeholder="Napr. Hobit alebo Tolkien"
       />
 
-      @if (searchText) {
+      @if (searchText()) {
         <button matIconButton matSuffix (click)="clearSearch()" aria-label="Vyčistiť">
           <mat-icon>close</mat-icon>
         </button>
@@ -48,9 +48,9 @@
     </mat-form-field>
 
     <mat-button-toggle-group
-      [(ngModel)]="availabilityFilter"
-      (ngModelChange)="onFilterChange()"
-      aria-label="Filter dostupnosti"
+      name="availability"
+      [ngModel]="availabilityFilter()"
+      (ngModelChange)="availabilityFilter.set($event); firstPage()"
     >
       <mat-button-toggle value="all">Všetky</mat-button-toggle>
       <mat-button-toggle value="available">Dostupné</mat-button-toggle>
@@ -59,7 +59,11 @@
 
     <mat-form-field appearance="outline" class="sort-field">
       <mat-label>Zoradiť podľa</mat-label>
-      <mat-select [(ngModel)]="sortBy" (ngModelChange)="onFilterChange()">
+      <mat-select
+        name="sortBy"
+        [ngModel]="sortBy()"
+        (ngModelChange)="sortBy.set($event); firstPage()"
+      >
         <mat-option value="none">Bez zoradenia</mat-option>
         <mat-option value="title">Názvu (A – Z)</mat-option>
         <mat-option value="year">Roku (najnovšie)</mat-option>
@@ -68,7 +72,7 @@
     </mat-form-field>
   </div>
 
-  <p>Zobrazené knihy: {{ visibleBooks().length }} z {{ books.length }}</p>
+  <p>Zobrazené knihy: {{ visibleBooks().length }}</p>
 
   @for (book of visibleBooks(); track book.id; let i = $index) {
     @if (isOnCurrentPage(i)) {
@@ -77,27 +81,24 @@
         (borrowed)="borrow(book)"
         (returned)="giveBack(book)"
         (edited)="updateBook($event)"
-        (deleted)="deleteBook($event)"
+        (deleted)="deleteBook(book)"
       >
       </app-book-card>
     }
-  } @empty {
-    @if (books.length === 0) {
-      <p>V knižnici zatiaľ nie sú žiadne knihy.</p>
-    } @else {
-      <p>Nenašli sa žiadne knihy. Skús zmeniť hľadanie alebo filter.</p>
-    }
+  }
+  @empty {
+    <p>Nenašli sa žiadne knihy. Skús zmeniť hľadanie alebo filter.</p>
   }
 
   <div class="pagination">
-    <button matButton="outlined" (click)="previousPage()" [disabled]="currentPage === 1">
+    <button mat-stroked-button (click)="previousPage()" [disabled]="currentPage() === 1">
       <mat-icon>chevron_left</mat-icon>
       Predošlá
     </button>
 
-    <span>Strana {{ currentPage }} z {{ pageCount() }}</span>
+    <span>Strana {{ currentPage() }} z {{ pageCount() }}</span>
 
-    <button matButton="outlined" (click)="nextPage()" [disabled]="currentPage === pageCount()">
+    <button mat-stroked-button (click)="nextPage()" [disabled]="currentPage() === pageCount()">
       Ďalšia
       <mat-icon iconPositionEnd>chevron_right</mat-icon>
     </button>

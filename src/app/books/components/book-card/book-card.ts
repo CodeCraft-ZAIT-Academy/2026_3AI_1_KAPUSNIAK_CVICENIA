@@ -1,4 +1,5 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, signal } from '@angular/core';
+
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -21,19 +22,19 @@ export class BookCard {
   edited = output<Book>(); 
   deleted = output<number>();
 
-  showDetails: boolean = false;
+  readonly showDetails = signal(false);
   favorite: boolean = false;
-  editing: boolean = false; 
-  confirmingDelete: boolean = false;
+  readonly editing = signal(false);
+  readonly confirmingDelete = signal(false);
 
   toggleEdit(): void {
-    this.editing = !this.editing;
-    this.confirmingDelete = false;
+    this.editing.update(value => !value);
+    this.confirmingDelete.set(false);
   }
 
   toggleDeleteConfirm(): void {
-    this.confirmingDelete = !this.confirmingDelete;
-    this.editing = false;
+    this.confirmingDelete.update(value => !value);
+    this.editing.set(false);
   }
 
   confirmDelete(): void {
@@ -42,15 +43,23 @@ export class BookCard {
 
   onSaveEdit(updatedBook: Book): void {
     this.edited.emit(updatedBook);
-    this.editing = false; 
+  this.editing.set(false);
   }
   genreColor(): string {
     return getGenreColor(this.book().genre);
   }
 
   toggleDetails(): void {
-    this.showDetails = !this.showDetails;
+    this.showDetails.update(open => !open);
   }
+  startEdit(): void { this.editing.set(true); }
+saveEdit(book: Book): void {
+  this.edited.emit(book);
+  this.editing.set(false);
+}
+cancelEdit(): void { this.editing.set(false); }
+askDelete(): void { this.confirmingDelete.set(true); }
+cancelDelete(): void { this.confirmingDelete.set(false); }
   
   toggleFavorite(): void {
     this.book().favorite = !this.book().favorite;
