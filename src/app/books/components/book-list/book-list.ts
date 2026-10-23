@@ -45,6 +45,12 @@ export class BookList {
   readonly maxBorrowed = this.bookService.maxBorrowed;
   books: Book[] = this.bookService.getBooks();
 
+  toggleFavoriteFilter(): void {
+    this.favoriteOnly.update(value => !value);
+    this.firstPage();
+  }
+  
+
   limitBorrowed(books: Book[]): Book[] {
     let borrowedCount = 0;
 
@@ -73,13 +79,19 @@ export class BookList {
   readonly pageSizes = [5, 10, 20];
 
 
-  readonly visibleBooks = computed(() =>
-  this.bookService.getFilteredBooks(
-    this.searchText(),
-    this.availabilityFilter(),
-    this.sortBy()
-  )
-);
+  readonly visibleBooks = computed(() => {
+    let books = this.bookService.getFilteredBooks(
+      this.searchText(),
+      this.availabilityFilter(),
+      this.sortBy()
+    );
+
+    if (this.favoriteOnly()) {
+      books = books.filter(book => book.favorite);
+    }
+
+    return books;
+  });
   onFilterChange(): void {
     this.currentPage.set(1);
   }
@@ -88,6 +100,19 @@ export class BookList {
     this.searchText.set('');
     this.firstPage();
   }
+  readonly totalBooks = computed(() => this.bookService.books().length);
+  readonly availableBooks = this.bookService.availableBooks;
+
+  resetFilters(): void {
+    this.searchText.set('');
+    this.availabilityFilter.set('all');
+    this.sortBy.set('none');
+    this.favoriteOnly.set(false);
+        this.firstPage();
+  }
+
+  readonly favoriteOnly = signal(false);
+  
 
 readonly pageCount = computed(() =>
   Math.max(1, Math.ceil(this.visibleBooks().length / this.pageSize()))
@@ -163,6 +188,7 @@ setPageSize(size: number): void {
   this.pageSize.set(size);
   this.firstPage();
 }
+
 
   
 }

@@ -28,7 +28,10 @@
 
   <h2>Zoznam kníh</h2>
 
+
   <div class="controls-bar">
+
+   
     <mat-form-field appearance="outline" class="search-field">
       <mat-label>Hľadať podľa názvu alebo autora</mat-label>
       <mat-icon matPrefix>search</mat-icon>
@@ -55,6 +58,7 @@
       <mat-button-toggle value="all">Všetky</mat-button-toggle>
       <mat-button-toggle value="available">Dostupné</mat-button-toggle>
       <mat-button-toggle value="borrowed">Vypožičané</mat-button-toggle>
+      <mat-button-toggle [checked]="favoriteOnly()" (change)="toggleFavoriteFilter()">Iba obľúbené </mat-button-toggle>
     </mat-button-toggle-group>
 
     <mat-form-field appearance="outline" class="sort-field">
@@ -73,6 +77,8 @@
   </div>
 
   <p>Zobrazené knihy: {{ visibleBooks().length }}</p>
+  <p>Celkový počet kníh: {{ totalBooks() }}</p>
+  <p>Dostupné knihy: {{ availableBooks().length }}</p>
 
   @for (book of visibleBooks(); track book.id; let i = $index) {
     @if (isOnCurrentPage(i)) {
@@ -103,4 +109,6 @@
       <mat-icon iconPositionEnd>chevron_right</mat-icon>
     </button>
   </div>
+
+  
 </section>
