@@ -3,4 +3,24 @@
     background-color: #1f3a5f;
     color: white;
   }
+  .brand-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: inherit;
+  }
   
+  .nav-links {
+    display: flex;
+    gap: 8px;
+  }
+  
+  .active-link {
+    background-color: #3868ac;
+    border-radius: 15px;
+  }
+  .toolbar mat-icon,
+.toolbar a {
+  color: white !important;
+}

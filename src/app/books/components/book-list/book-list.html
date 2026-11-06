@@ -1,37 +1,7 @@
 <section>
-  <mat-accordion multi>
-    <mat-expansion-panel>
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          <mat-icon>shopping_cart</mat-icon>
-          Košík
-        </mat-panel-title>
-        <mat-panel-description>
-          Požičané knihy: {{ borrowedBooks().length }} / {{ maxBorrowed }}
-        </mat-panel-description>
-      </mat-expansion-panel-header>
-
-      <app-cart [books]="borrowedBooks()" (returned)="giveBack($event)"></app-cart>
-    </mat-expansion-panel>
-
-    <mat-expansion-panel #addPanel>
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          <mat-icon>add</mat-icon>
-          Pridať knihu
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-
-      <app-book-form (saved)="addBook($event); addPanel.close()"></app-book-form>
-    </mat-expansion-panel>
-  </mat-accordion>
-
   <h2>Zoznam kníh</h2>
 
-
   <div class="controls-bar">
-
-   
     <mat-form-field appearance="outline" class="search-field">
       <mat-label>Hľadať podľa názvu alebo autora</mat-label>
       <mat-icon matPrefix>search</mat-icon>
@@ -58,7 +28,7 @@
       <mat-button-toggle value="all">Všetky</mat-button-toggle>
       <mat-button-toggle value="available">Dostupné</mat-button-toggle>
       <mat-button-toggle value="borrowed">Vypožičané</mat-button-toggle>
-      <mat-button-toggle [checked]="favoriteOnly()" (change)="toggleFavoriteFilter()">Iba obľúbené </mat-button-toggle>
+      <mat-button-toggle [checked]="favoriteOnly()" (click)="toggleFavoriteFilter()">Iba obľúbené</mat-button-toggle>
     </mat-button-toggle-group>
 
     <mat-form-field appearance="outline" class="sort-field">
@@ -86,8 +56,6 @@
         [book]="book"
         (borrowed)="borrow(book)"
         (returned)="giveBack(book)"
-        (edited)="updateBook($event)"
-        (deleted)="deleteBook(book)"
       >
       </app-book-card>
     }
@@ -109,6 +77,4 @@
       <mat-icon iconPositionEnd>chevron_right</mat-icon>
     </button>
   </div>
-
-  
 </section>

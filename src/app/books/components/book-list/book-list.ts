@@ -10,7 +10,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { BookCard } from '../book-card/book-card';
 import { Book } from '../../book';
 import { generateBooks } from '../../book-generator';
-import { Cart } from '../../../cart/components/cart/cart';
 import { BookFormComponent } from '../book-form/book-form';
 import { BookService } from '../../book.service';
 
@@ -21,7 +20,6 @@ import { BookService } from '../../book.service';
   imports: [
     FormsModule,
     BookCard,
-    Cart,
     BookFormComponent,
     MatButtonModule,
     MatIconModule,
@@ -42,7 +40,7 @@ export class BookList {
     { id: 3, title: 'Malý Princ', author: 'Exupéry', year: 1943, available: true, genre: 'Fiction', rating: 5, pages: 310, favorite: false }
   ];
 
-  readonly maxBorrowed = this.bookService.maxBorrowed;
+ 
   books: Book[] = this.bookService.getBooks();
 
   toggleFavoriteFilter(): void {
@@ -60,10 +58,6 @@ export class BookList {
       }
 
       borrowedCount++;
-
-      if (borrowedCount > this.maxBorrowed) {
-        return { ...book, available: true };
-      }
 
       return book;
     });
@@ -140,17 +134,17 @@ previousPage(): void {
     this.currentPage.update(p => Math.min(this.pageCount(), p + 1));
   }
 
-  readonly borrowedBooks = this.bookService.borrowedBooks;
+
 
   borrow(book: Book): void {
     if (!this.bookService.borrowBook(book.id)) {
       alert('Knihu teraz nie je možné vypožičať.');
     }
   }
-  
   giveBack(book: Book): void {
     this.bookService.returnBook(book.id);
   }
+
 
   addBook(book: Book): void {
     this.bookService.addBook(book);

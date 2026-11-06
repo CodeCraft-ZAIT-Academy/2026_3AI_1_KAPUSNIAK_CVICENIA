@@ -1,5 +1,5 @@
 import { Component, input, output, signal } from '@angular/core';
-
+import { RouterLink } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -10,7 +10,7 @@ import { getGenreColor } from '../../genre-colors';
 
 @Component({
   selector: 'app-book-card',
-  imports: [MatCardModule, BookFormComponent, MatButtonModule, MatIconModule, BookDetail],
+  imports: [RouterLink, MatCardModule, BookFormComponent, MatButtonModule, MatIconModule, BookDetail],
   templateUrl: './book-card.html',
   styleUrl: './book-card.css'
 })

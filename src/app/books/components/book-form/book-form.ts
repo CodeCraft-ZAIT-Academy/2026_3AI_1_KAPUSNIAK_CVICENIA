@@ -8,9 +8,6 @@ import { Book } from '../../book';
 import { createEmptyBook } from '../../book.factory';
 import { GENRES } from '../../genres'; 
 
-
-
-
 @Component({
   selector: 'app-book-form',
   imports: [
@@ -29,15 +26,14 @@ export class BookFormComponent implements OnInit {
 
   book = input<Book | undefined>();
 
-  saved = output<Book>();
-  cancelled = output<void>()
+  readonly saved = output<Book>();
+  readonly cancelled = output<void>();
 
   draft: Book = createEmptyBook();
 
   ngOnInit(): void {
     const initialBook = this.book();
     if (initialBook) {
-    
       this.draft = { ...initialBook };
     }
   }
@@ -46,28 +42,14 @@ export class BookFormComponent implements OnInit {
     return !!this.book();
   }
 
-  emptyBook(): Book {
-    return {
-      id: 0,
-      title: '',
-      author: '',
-      year: this.currentYear,
-      pages: 100,
-      genre: '',
-      rating: 3,
-      available: true,
-      favorite: false
-    };
-  }
-
   cancel(): void {
     this.cancelled.emit();
   }
 
-  submitForm(form: NgForm): void {
-    if (form.invalid) return;
-
-    this.draft = createEmptyBook();
-    form.resetForm(this.draft);
+  save(form: NgForm): void {
+    if (form.invalid) {
+      return;
     }
+    this.saved.emit(this.draft);
   }
+}

@@ -1,0 +1,23 @@
+<div class="book-page-container" style="padding: 20px;">
+  <nav style="margin-bottom: 20px;">
+    <a routerLink="/books" mat-button color="primary">
+      <mat-icon>arrow_back</mat-icon> Späť na zoznam kníh
+    </a>
+  </nav>
+  @if (book(); as currentBook) {
+    <h2>{{ currentBook.title }}</h2>
+    <p>Autor: {{ currentBook.author }}</p>
+    <p>Stav: {{ currentBook.available ? 'Dostupná' : 'Vypožičaná' }}</p>
+
+    <app-book-detail
+      [book]="currentBook"
+      (borrowed)="borrow(currentBook)"
+      (returned)="returnBook(currentBook)"
+      (favoriteToggled)="toggleFavorite(currentBook)"
+      (edited)="updateBook($event)">
+    </app-book-detail>
+  } @else {
+    <p>Kniha s číslom {{ id() }} v knižnici neexistuje.</p>
+    <p><a routerLink="/books" mat-button color="primary">Späť na zoznam kníh</a></p>
+  }
+</div>

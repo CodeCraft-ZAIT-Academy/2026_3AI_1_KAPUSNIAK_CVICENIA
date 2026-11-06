@@ -1,0 +1,31 @@
+<div class="admin-edit-container" style="padding: 24px; max-width: 600px; margin: 0 auto;">
+    <nav style="margin-bottom: 20px;">
+      <a mat-button routerLink="/admin">
+        <mat-icon>arrow_back</mat-icon> Späť do administrácie
+      </a>
+    </nav>
+  
+    @if (isEditMode()) {
+      <h2>Úprava knihy</h2>
+      
+      @if (book(); as currentBook) {
+        <app-book-form 
+          [book]="currentBook" 
+          (saved)="onSave($event)" 
+          (cancelled)="onCancel()">
+        </app-book-form>
+      } @else {
+        <div class="error-message" style="color: red; margin-top: 20px;">
+          <p>Kniha s číslom "{{ id() }}" neexistuje.</p>
+          <a mat-raised-button color="primary" routerLink="/admin">Späť do administrácie</a>
+        </div>
+      }
+  
+    } @else {
+      <h2>Nová kniha</h2>
+      <app-book-form 
+        (saved)="onSave($event)" 
+        (cancelled)="onCancel()">
+      </app-book-form>
+    }
+  </div>

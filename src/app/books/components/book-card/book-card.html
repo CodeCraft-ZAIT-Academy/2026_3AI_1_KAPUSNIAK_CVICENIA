@@ -64,10 +64,10 @@
     </mat-card-content>
 
     <mat-card-actions>
-      <button matButton (click)="toggleDetails()">
-        @if (showDetails()) { Skryť detail } 
-        @else { Zobraziť detail }
-      </button>
+     
+      <a matButton routerLink="/books/{{ book().id }}">
+        <mat-icon>visibility</mat-icon> Detail
+      </a>
 
       <button matButton="filled" [disabled]="!book().available" (click)="borrow()">
         Vypožičať
