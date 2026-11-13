@@ -19,6 +19,7 @@
         </button>
       }
     </mat-form-field>
+    
 
     <mat-button-toggle-group
       name="availability"
@@ -49,7 +50,7 @@
   <p>Zobrazené knihy: {{ visibleBooks().length }}</p>
   <p>Celkový počet kníh: {{ totalBooks() }}</p>
   <p>Dostupné knihy: {{ availableBooks().length }}</p>
-
+  <app-server-book-list />
   @for (book of visibleBooks(); track book.id; let i = $index) {
     @if (isOnCurrentPage(i)) {
       <app-book-card

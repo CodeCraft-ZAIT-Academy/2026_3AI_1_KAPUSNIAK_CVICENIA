@@ -12,7 +12,7 @@ import { Book } from '../../book';
 import { generateBooks } from '../../book-generator';
 import { BookFormComponent } from '../book-form/book-form';
 import { BookService } from '../../book.service';
-
+import { ServerBookList } from '../server-book-list/server-book-list';
 
 
 @Component({
@@ -27,7 +27,8 @@ import { BookService } from '../../book.service';
     MatFormFieldModule,
     MatInputModule,
     MatButtonToggleModule,
-    MatSelectModule
+    MatSelectModule,
+    ServerBookList
   ],
   templateUrl: './book-list.html',
   styleUrl: './book-list.css'

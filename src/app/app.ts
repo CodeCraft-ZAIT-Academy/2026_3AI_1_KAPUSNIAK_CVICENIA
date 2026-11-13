@@ -5,7 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatBadgeModule } from '@angular/material/badge';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { BookService } from './books/book.service';
-import { NotFound } from './shared/components/not-found/not-found'; // 👈 1. Importuj komponent
+import { NotFound } from './shared/components/not-found/not-found'; 
 
 @Component({
   selector: 'app-root',
@@ -17,7 +17,7 @@ import { NotFound } from './shared/components/not-found/not-found'; // 👈 1. I
     MatIconModule,
     MatButtonModule,
     MatBadgeModule,
-    NotFound // 👈 2. Pridaj ho do pole imports
+    NotFound
   ],
   templateUrl: './app.html',
   styleUrl: './app.css'
