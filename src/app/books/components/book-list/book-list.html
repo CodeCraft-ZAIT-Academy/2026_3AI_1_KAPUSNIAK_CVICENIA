@@ -19,7 +19,6 @@
         </button>
       }
     </mat-form-field>
-    
 
     <mat-button-toggle-group
       name="availability"
@@ -47,9 +46,11 @@
     </mat-form-field>
   </div>
 
-  <p>Zobrazené knihy: {{ visibleBooks().length }}</p>
-  <p>Celkový počet kníh: {{ totalBooks() }}</p>
-  <p>Dostupné knihy: {{ availableBooks().length }}</p>
+  <p class="stats">
+    Všetkých kníh: {{ totalBooks() }}
+    · Dostupných: {{ (books() | bookFilter : '' : 'available').length }}
+    · Obľúbených: {{ (books() | bookFilter : '' : 'all' : true).length }}
+  </p>
 
   @for (book of visibleBooks(); track book.id; let i = $index) {
     @if (isOnCurrentPage(i)) {
@@ -57,6 +58,7 @@
         [book]="book"
         (borrowed)="borrow(book)"
         (returned)="giveBack(book)"
+        (favoriteToggled)="toggleFavorite(book)"
       >
       </app-book-card>
     }

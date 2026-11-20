@@ -19,7 +19,8 @@ export class BookCard {
 
   borrowed = output<void>();
   returned = output<void>();
-  edited = output<Book>(); 
+  favoriteToggled = output<void>();
+  edited = output<Book>();
   deleted = output<number>();
 
   readonly showDetails = signal(false);
@@ -43,8 +44,9 @@ export class BookCard {
 
   onSaveEdit(updatedBook: Book): void {
     this.edited.emit(updatedBook);
-  this.editing.set(false);
+    this.editing.set(false);
   }
+
   genreColor(): string {
     return getGenreColor(this.book().genre);
   }
@@ -52,23 +54,36 @@ export class BookCard {
   toggleDetails(): void {
     this.showDetails.update(open => !open);
   }
-  startEdit(): void { this.editing.set(true); }
-saveEdit(book: Book): void {
-  this.edited.emit(book);
-  this.editing.set(false);
-}
-cancelEdit(): void { this.editing.set(false); }
-askDelete(): void { this.confirmingDelete.set(true); }
-cancelDelete(): void { this.confirmingDelete.set(false); }
-  
+
+  startEdit(): void {
+    this.editing.set(true);
+  }
+
+  saveEdit(book: Book): void {
+    this.edited.emit(book);
+    this.editing.set(false);
+  }
+
+  cancelEdit(): void {
+    this.editing.set(false);
+  }
+
+  askDelete(): void {
+    this.confirmingDelete.set(true);
+  }
+
+  cancelDelete(): void {
+    this.confirmingDelete.set(false);
+  }
+
   toggleFavorite(): void {
-    this.book().favorite = !this.book().favorite;
+    this.favoriteToggled.emit();
   }
 
   borrow(): void {
     this.borrowed.emit();
   }
-  
+
   giveBack(): void {
     this.returned.emit();
   }
