@@ -17,7 +17,8 @@ export class BookPage {
   private bookService = inject(BookService);
 
   readonly id = input.required<string>();
-
+  readonly loading = this.bookService.loading;
+  readonly loadError = this.bookService.loadError;
   readonly book = computed(() => {
     return this.bookService.getBookById(Number(this.id()));
   });

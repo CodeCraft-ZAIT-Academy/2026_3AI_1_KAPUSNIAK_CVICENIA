@@ -4,11 +4,15 @@
       <mat-icon>arrow_back</mat-icon> Späť na zoznam kníh
     </a>
   </nav>
-  @if (book(); as currentBook) {
+  @if (loading()) {
+    <p role="status">Načítavam knihu…</p>
+  } @else if (loadError()) {
+    <p role="alert" style="color: red;">{{ loadError() }}</p>
+  } @else if (book(); as currentBook) {
     <h2>{{ currentBook.title }}</h2>
     <p>Autor: {{ currentBook.author }}</p>
     <p>Stav: {{ currentBook.available ? 'Dostupná' : 'Vypožičaná' }}</p>
-
+    
     <app-book-detail
       [book]="currentBook"
       (borrowed)="borrow(currentBook)"

@@ -17,7 +17,6 @@ import { NotFound } from './shared/components/not-found/not-found';
     MatIconModule,
     MatButtonModule,
     MatBadgeModule,
-    NotFound
   ],
   templateUrl: './app.html',
   styleUrl: './app.css'

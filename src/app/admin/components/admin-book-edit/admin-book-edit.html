@@ -5,27 +5,17 @@
       </a>
     </nav>
   
-    @if (isEditMode()) {
-      <h2>Úprava knihy</h2>
-      
-      @if (book(); as currentBook) {
-        <app-book-form 
-          [book]="currentBook" 
-          (saved)="onSave($event)" 
-          (cancelled)="onCancel()">
-        </app-book-form>
-      } @else {
-        <div class="error-message" style="color: red; margin-top: 20px;">
-          <p>Kniha s číslom "{{ id() }}" neexistuje.</p>
-          <a mat-raised-button color="primary" routerLink="/admin">Späť do administrácie</a>
-        </div>
-      }
-  
+    @if (loading()) {
+      <p role="status">Načítavam knihy…</p>
+    } @else if (loadError()) {
+      <p role="alert">{{ loadError() }}</p>
+    } @else if (!isEditMode()) {
+      <h1>Nová kniha</h1>
+      <app-book-form (saved)="save($event)" />
+    } @else if (book()) {
+      <h1>Úprava knihy</h1>
+      <app-book-form [book]="book()" (saved)="save($event)" (cancelled)="cancel()" />
     } @else {
-      <h2>Nová kniha</h2>
-      <app-book-form 
-        (saved)="onSave($event)" 
-        (cancelled)="onCancel()">
-      </app-book-form>
+      <p class="empty">Kniha s číslom {{ id() }} v knižnici neexistuje.</p>
     }
   </div>

@@ -17,10 +17,12 @@ export class AdminBooks {
   private readonly bookService = inject(BookService);
 
   readonly books = this.bookService.books;
+  readonly loading = this.bookService.loading;
+  readonly loadError = this.bookService.loadError;
 
   readonly deletingBookId = signal<number | null>(null);
 
-  askDelete(id: number): void {
+askDelete(id: number): void {
     this.deletingBookId.set(id);
   }
 

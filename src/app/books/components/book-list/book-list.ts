@@ -12,7 +12,7 @@ import { Book } from '../../book';
 import { generateBooks } from '../../book-generator';
 import { BookFormComponent } from '../book-form/book-form';
 import { BookService } from '../../book.service';
-import { ServerBookList } from '../server-book-list/server-book-list';
+
 
 
 @Component({
@@ -20,7 +20,6 @@ import { ServerBookList } from '../server-book-list/server-book-list';
   imports: [
     FormsModule,
     BookCard,
-    BookFormComponent,
     MatButtonModule,
     MatIconModule,
     MatExpansionModule,
@@ -28,7 +27,7 @@ import { ServerBookList } from '../server-book-list/server-book-list';
     MatInputModule,
     MatButtonToggleModule,
     MatSelectModule,
-    ServerBookList
+    
   ],
   templateUrl: './book-list.html',
   styleUrl: './book-list.css'

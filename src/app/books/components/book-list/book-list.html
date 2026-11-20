@@ -50,7 +50,7 @@
   <p>Zobrazené knihy: {{ visibleBooks().length }}</p>
   <p>Celkový počet kníh: {{ totalBooks() }}</p>
   <p>Dostupné knihy: {{ availableBooks().length }}</p>
-  <app-server-book-list />
+
   @for (book of visibleBooks(); track book.id; let i = $index) {
     @if (isOnCurrentPage(i)) {
       <app-book-card
@@ -62,7 +62,15 @@
     }
   }
   @empty {
-    <p>Nenašli sa žiadne knihy. Skús zmeniť hľadanie alebo filter.</p>
+    @if (loading()) {
+      <p role="status">Načítavam knihy…</p>
+    } @else if (loadError()) {
+      <p role="alert">{{ loadError() }}</p>
+    } @else if (books().length === 0) {
+      <p class="empty">V knižnici zatiaľ nie sú žiadne knihy.</p>
+    } @else {
+      <p class="empty">Nenašli sa žiadne knihy. Skús zmeniť hľadanie alebo filter.</p>
+    }
   }
 
   <div class="pagination">
